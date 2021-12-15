@@ -1,10 +1,23 @@
 <html>
   <head>
     <title>To Do List</title>
+    <link rel="stylesheet" href="/css/style.css"/>
   </head>
   <body>
-    <h1>Tasks To Do</h1>
+    <h1 class="title">Tasks To Do</h1>
     <hr/>
-    Opa, tudo bem?
+    <div class="container">
+      <form method="POST" action="/todo">
+          <input type="text" name="title" placeholder="Type a task" />
+          
+          <input type="submit" value="Send New Task" />
+      </form>
+    </div>
+    <ul>
+      {{#tasks}}
+        <li> {{title}} - {{done}}  <a href="/todo/{{id}}/remove">x</a></li>
+      {{/tasks}}
+     
+    </ul>
   </body>
 </html>
