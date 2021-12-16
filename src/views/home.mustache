@@ -5,19 +5,27 @@
   </head>
   <body>
     <h1 class="title">Tasks To Do</h1>
-    <hr/>
-    <div class="container">
-      <form method="POST" action="/todo">
-          <input type="text" name="title" placeholder="Type a task" />
+    
+    <div class="input-area">
+      <form class="formInput" method="POST" action="/todo">
+          <input class="inputField" type="text" name="title" placeholder="Type a task" />
           
-          <input type="submit" value="Send New Task" />
+          <input class="buttonTask" type="submit" value="Send New Task" />
       </form>
     </div>
-    <ul>
-      {{#tasks}}
-        <li> {{title}} - {{done}}  <a href="/todo/{{id}}/remove">x</a></li>
-      {{/tasks}}
-     
-    </ul>
+    
+    <div class="tasks-area">
+      <ul>
+        {{#tasks}}
+          <li>  
+            {{#done}} <a class="green" href="/todo/{{id}}/update">{{title}}</a>  {{/done}} 
+            {{^done}} <a class="red" href="/todo/{{id}}/update">{{title}}</a>  {{/done}} 
+            <a class="removeButton" href="/todo/{{id}}/remove">x</a>
+          </li>
+          <hr/>
+        {{/tasks}}
+      
+      </ul>
+    </div>
   </body>
 </html>
