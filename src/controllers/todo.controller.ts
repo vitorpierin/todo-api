@@ -1,6 +1,27 @@
 import { Request, Response } from 'express';
 import { Todo } from '../models/Todo';
 
+export const home = async (req: Request, res: Response)=>{
+    let title: string = req.query.title as string;
+    let done: string = req.query.done as string;
+    let tasks = await Todo.findAll({
+        order: [
+            ['done', 'ASC']
+         ]
+    });
+
+   
+
+   
+
+    res.render('home',{
+        title,
+        done,
+        tasks
+    });
+
+}
+
 export const all = async (req: Request, res:Response) => {
     const list = await Todo.findAll();
     res.json({list});
@@ -13,41 +34,35 @@ export const add = async (req: Request, res:Response) => {
             done: req.body.done ? true : false
         });
 
-        res.status(201).json({item: newTodo}); //201 houve inserção de dados e deu tudo certo
+        //res.status(201).json({item: newTodo}); //201 houve inserção de dados e deu tudo certo
+        
     }else{
         res.json({error: 'Dados não enviados'});
+      
     }
+
     res.redirect('/');
-    
 }
 
 export const update = async (req: Request, res:Response) => {
     let id: string = req.params.id;
+    let todo = await Todo.findAll({where: {id}}); //primary key
+    
+    if(todo.length){
+      
+        let task = todo[0];
 
-    let todo = await Todo.findByPk(id); //primary key
-    if(todo){
-        if(req.body.title){
-            todo.title = req.body.title;
-        }
-
-        if(req.body.done){
-            switch(req.body.done.toLowerCase()){
-                case 'true':
-                case '1':
-                    todo.done = true;
-                    break;
-                case 'false':
-                case '0':
-                    todo.done = false;
-                    break;
-            }
-        }
-
-        await todo.save();
-        res.json({item: todo});
-    }else{
-        res.json({error: 'Item não encontrado!'});
+        if(task.done){
+            task.done = false;
+            await task.save();
+         
+        }else{
+            task.done = true;
+            await task.save();
+            
+        } 
     }
+    res.redirect('/'); 
 }
 
 export const remove = async (req: Request, res:Response) => {
@@ -56,7 +71,8 @@ export const remove = async (req: Request, res:Response) => {
     let todo = await Todo.findByPk(id);
     if(todo){
         await todo.destroy();
+       
     }
 
-    res.json({});
+    res.redirect('/');
 }
